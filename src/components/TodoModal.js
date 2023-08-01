@@ -8,6 +8,7 @@ function TodoModal({ active, toggleModal }) {
   const [title, setTitle] = useState("");
   const [loading, setLoading] = useState(false);
 
+  //todo : thực ra chỗ này anh thấy mình viết handleAddTodo được mà không nhất thiết cần dùng useCallback đâu, đừng làm dụng nó quá
   const addTodo = useCallback(async (title) => {
     try {
       setLoading(true);
@@ -20,6 +21,8 @@ function TodoModal({ active, toggleModal }) {
         data: newTodo,
       };
       const { success, todo } = await fetchData(requestConfig);
+      //todo cái này anh nghĩ nên trả error ở trong backend dể try catch nó bắt luôn đc error chứ không nên viết thế này
+      //anh thấy mấy chỗ đều như thế , xem xét sửa lại nhé
       if (!success) throw new Error("Fail to add todo");
       setTodos((todos) => [...todos, todo]);
     } catch (error) {
@@ -63,7 +66,8 @@ function TodoModal({ active, toggleModal }) {
             value={title}
             placeholder="Add todo"
             onChange={changeHandler}
-          />
+            label={''}
+            labelHidden/>
         </Modal.Section>
       </Modal>
     </div>

@@ -23,6 +23,7 @@ function Todo({ todo, onDelete, onComplete }) {
 
   return (
     <ResourceItem id={id} accessibilityLabel={`View details for ${title}`}>
+      {/*todo sao đoạn này mình không dùng một vài component có sẵn của polaris mà lại dùng thẻ div hay thẻ p nhỉ ? */}
       <div className="flex-2-child">
         <p>{title}</p>
         <ButtonGroup>

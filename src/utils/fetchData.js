@@ -15,7 +15,6 @@ async function fetchData({
       "Content-Type": "application/json",
     },
   };
-
   const res = await fetch(fetchUrl, method === "get" ? {} : requestConfig);
   return res.json();
 }

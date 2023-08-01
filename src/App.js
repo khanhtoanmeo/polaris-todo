@@ -14,6 +14,8 @@ function App() {
     setActive((active) => !active);
   };
 
+  //todo : em chia thư mục thế này có vẻ chưa ổn, chỗ chia thư mục anh sẽ hướng dẫn lại .
+
   return (
     <AppProvider>
       <TodosContext.Provider value={{ todos, setTodos }}>
