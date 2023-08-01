@@ -1,24 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import "@shopify/polaris/dist/styles.css";
+import { AppProvider } from "@shopify/polaris";
+import MyTopBar from "./components/TopBar";
+import Todos from "./components/Todos";
+import TodosContext from "./store/todosContext";
+import { useState } from "react";
+import TodoModal from "./components/TodoModal";
 
 function App() {
+  const [todos, setTodos] = useState([]);
+  const [active, setActive] = useState(false);
+
+  const toggleModal = () => {
+    setActive((active) => !active);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AppProvider>
+      <TodosContext.Provider value={{ todos, setTodos }}>
+        <MyTopBar />
+        <Todos toggleModal={toggleModal} />
+        <TodoModal active={active} toggleModal={toggleModal} />
+      </TodosContext.Provider>
+    </AppProvider>
   );
 }
 
