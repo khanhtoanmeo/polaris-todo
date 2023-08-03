@@ -1,21 +1,20 @@
 import { ResourceList, Page } from "@shopify/polaris";
-import { useContext, useState, useCallback } from "react";
+import { useContext, useEffect, useState } from "react";
 import TodosContext from "../store/todosContext";
-import useFetch from "../hooks/useFetch";
 import Todo from "./Todo";
-import fetchData from "../utils/fetchData";
+import fetchData from "../helpers/fetchData";
+import useFetchTodos from "../hooks/useFetchTodos";
 
 function Todos({ toggleModal }) {
   const { todos, setTodos } = useContext(TodosContext);
   const [selectedItems, setSelectedItems] = useState([]);
+  const { result, loading, fetched } = useFetchTodos();
 
-  const dataLoadedHandler = useCallback((data) => {
-    setTodos(data);
-  }, []);
+  useEffect(() => {
+    if (fetched) setTodos(result);
+  }, [fetched]);
 
-  const { loading } = useFetch("/todos", dataLoadedHandler);
-
-  const deleteByIdHandler = useCallback(async (id) => {
+  const deleteByIdHandler = async (id) => {
     try {
       const requestConfig = {
         url: `/todo/${id}`,
@@ -27,7 +26,7 @@ function Todos({ toggleModal }) {
     } catch (error) {
       alert(error.message);
     }
-  }, []);
+  };
 
   const deleteManyHandler = async () => {
     try {
@@ -73,7 +72,7 @@ function Todos({ toggleModal }) {
       setSelectedItems([]);
     }
   };
-  const completeHandler = useCallback(async (id) => {
+  const completeHandler = async (id) => {
     try {
       const requestConfig = {
         url: `/todo/${id}`,
@@ -94,7 +93,7 @@ function Todos({ toggleModal }) {
     } catch (error) {
       alert(error.message);
     }
-  }, []);
+  };
   const resourseListMarkUp = (
     <ResourceList
       resourceName={{ singular: "Todo", plural: "Todos" }}

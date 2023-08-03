@@ -1,10 +1,11 @@
 import "@shopify/polaris/dist/styles.css";
 import { AppProvider } from "@shopify/polaris";
-import MyTopBar from "./components/TopBar";
+import MyTopBar from "./layout/TopBar";
 import Todos from "./components/Todos";
 import TodosContext from "./store/todosContext";
 import { useState } from "react";
 import TodoModal from "./components/TodoModal";
+import AppLayout from "./layout/AppLayout";
 
 function App() {
   const [todos, setTodos] = useState([]);
@@ -14,14 +15,13 @@ function App() {
     setActive((active) => !active);
   };
 
-  //todo : em chia thư mục thế này có vẻ chưa ổn, chỗ chia thư mục anh sẽ hướng dẫn lại .
-
   return (
     <AppProvider>
       <TodosContext.Provider value={{ todos, setTodos }}>
-        <MyTopBar />
-        <Todos toggleModal={toggleModal} />
-        <TodoModal active={active} toggleModal={toggleModal} />
+        <AppLayout>
+          <Todos toggleModal={toggleModal} />
+          <TodoModal active={active} toggleModal={toggleModal} />
+        </AppLayout>
       </TodosContext.Provider>
     </AppProvider>
   );

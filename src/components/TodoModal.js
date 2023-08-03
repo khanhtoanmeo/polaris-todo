@@ -1,15 +1,14 @@
 import { Modal, TextField } from "@shopify/polaris";
-import { useState, useCallback, useContext } from "react";
+import { useState, useContext } from "react";
 import TodosContext from "../store/todosContext";
-import fetchData from "../utils/fetchData";
+import fetchData from "../helpers/fetchData";
 
 function TodoModal({ active, toggleModal }) {
   const { setTodos } = useContext(TodosContext);
   const [title, setTitle] = useState("");
   const [loading, setLoading] = useState(false);
 
-  //todo : thực ra chỗ này anh thấy mình viết handleAddTodo được mà không nhất thiết cần dùng useCallback đâu, đừng làm dụng nó quá
-  const addTodo = useCallback(async (title) => {
+  const addTodo = async (title) => {
     try {
       setLoading(true);
       if (!title.trim()) throw new Error("Please enter something meaningful");
@@ -32,16 +31,16 @@ function TodoModal({ active, toggleModal }) {
       setLoading(false);
       setTitle("");
     }
-  }, []);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     addTodo(title);
   };
 
-  const changeHandler = useCallback((newTitle) => {
+  const changeHandler = (newTitle) => {
     setTitle(newTitle);
-  }, []);
+  };
 
   return (
     <div style={{ height: "500px" }}>
@@ -66,8 +65,9 @@ function TodoModal({ active, toggleModal }) {
             value={title}
             placeholder="Add todo"
             onChange={changeHandler}
-            label={''}
-            labelHidden/>
+            label={""}
+            labelHidden
+          />
         </Modal.Section>
       </Modal>
     </div>
