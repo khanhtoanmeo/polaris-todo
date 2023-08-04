@@ -30,23 +30,25 @@ function Todos({ toggleModal }) {
 
   const deleteManyHandler = async () => {
     try {
-      const idList = selectedItems;
+      const ids = selectedItems;
       const requestConfig = {
         url: `/delete-todos`,
         method: "post",
         data: {
-          idList,
+          ids,
         },
       };
       const { success } = await fetchData(requestConfig);
       if (!success) throw new Error("Can not delete todos");
-      setTodos((todos) => todos.filter((todo) => !idList.includes(todo.id)));
+      setTodos((todos) => todos.filter((todo) => !ids.includes(todo.id)));
     } catch (error) {
       alert(error.message);
     } finally {
       setSelectedItems([]);
     }
   };
+
+  //todo : cái này với cái dưới gộp lại thành 1 được không ?
   const completeManyHandler = async () => {
     try {
       const idList = selectedItems;
@@ -82,7 +84,6 @@ function Todos({ toggleModal }) {
         },
       };
       const { success } = await fetchData(requestConfig);
-
       if (!success) throw new Error("Fail to mark to do as completed");
       setTodos((todos) =>
         todos.map((todo) => {

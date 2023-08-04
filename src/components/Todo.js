@@ -16,6 +16,8 @@ function Todo({ todo, onDelete, onComplete }) {
   const status = isCompleted ? "success" : "";
   const badgeTitle = isCompleted ? "Done" : "Pending";
 
+
+
   const completeHandler = async () => {
     setCompleteLoading(true);
     await onComplete(id);

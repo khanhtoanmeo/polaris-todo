@@ -20,8 +20,6 @@ function TodoModal({ active, toggleModal }) {
         data: newTodo,
       };
       const { success, todo } = await fetchData(requestConfig);
-      //todo cái này anh nghĩ nên trả error ở trong backend dể try catch nó bắt luôn đc error chứ không nên viết thế này
-      //anh thấy mấy chỗ đều như thế , xem xét sửa lại nhé
       if (!success) throw new Error("Fail to add todo");
       setTodos((todos) => [...todos, todo]);
     } catch (error) {
