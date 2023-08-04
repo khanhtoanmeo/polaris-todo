@@ -7,7 +7,6 @@ async function fetchData({
   isFetchApi = true,
 }) {
   const fetchUrl = isFetchApi ? BASE_URL + url : url;
-  console.log(data);
   const requestConfig = {
     body: JSON.stringify(data),
     method,

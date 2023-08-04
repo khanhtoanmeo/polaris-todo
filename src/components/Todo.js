@@ -1,6 +1,12 @@
-import { Badge, Button, ButtonGroup, ResourceItem } from "@shopify/polaris";
+import {
+  Badge,
+  Button,
+  ButtonGroup,
+  ResourceItem,
+  Stack,
+  TextContainer,
+} from "@shopify/polaris";
 import { useState } from "react";
-import "../styles/styles.css";
 
 function Todo({ todo, onDelete, onComplete }) {
   const [completeLoading, setCompleteLoading] = useState(false);
@@ -23,9 +29,8 @@ function Todo({ todo, onDelete, onComplete }) {
 
   return (
     <ResourceItem id={id} accessibilityLabel={`View details for ${title}`}>
-      {/*todo sao đoạn này mình không dùng một vài component có sẵn của polaris mà lại dùng thẻ div hay thẻ p nhỉ ? */}
-      <div className="flex-2-child">
-        <p>{title}</p>
+      <Stack distribution="equalSpacing">
+        <TextContainer>{title}</TextContainer>
         <ButtonGroup>
           <Badge status={status}>{badgeTitle}</Badge>
           <Button onClick={completeHandler} loading={completeLoading}>
@@ -35,7 +40,7 @@ function Todo({ todo, onDelete, onComplete }) {
             Delete
           </Button>
         </ButtonGroup>
-      </div>
+      </Stack>
     </ResourceItem>
   );
 }
