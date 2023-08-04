@@ -14,23 +14,8 @@ function Todos({ toggleModal }) {
     if (fetched) setTodos(result);
   }, [fetched]);
 
-  const deleteByIdHandler = async (id) => {
+  const deleteHandler = async (ids) => {
     try {
-      const requestConfig = {
-        url: `/todo/${id}`,
-        method: "delete",
-      };
-      const { success } = await fetchData(requestConfig);
-      if (!success) throw new Error("Fail to delete todo");
-      setTodos((todos) => todos.filter((todo) => todo.id !== id));
-    } catch (error) {
-      alert(error.message);
-    }
-  };
-
-  const deleteManyHandler = async () => {
-    try {
-      const ids = selectedItems;
       const requestConfig = {
         url: `/delete-todos`,
         method: "post",
@@ -48,23 +33,21 @@ function Todos({ toggleModal }) {
     }
   };
 
-  //todo : cái này với cái dưới gộp lại thành 1 được không ?
-  const completeManyHandler = async () => {
+  const completeHandler = async (ids) => {
     try {
-      const idList = selectedItems;
       const requestConfig = {
         url: `/complete-todos`,
         method: "put",
         data: {
-          idList,
           isCompleted: true,
+          ids,
         },
       };
       const { success } = await fetchData(requestConfig);
-      if (!success) throw new Error("Can not complete todos");
+      if (!success) throw new Error("Fail to mark todos as completed");
       setTodos((todos) =>
         todos.map((todo) => {
-          if (idList.includes(todo.id)) return { ...todo, isCompleted: true };
+          if (ids.includes(todo.id)) return { ...todo, isCompleted: true };
           return todo;
         })
       );
@@ -72,27 +55,6 @@ function Todos({ toggleModal }) {
       alert(error.message);
     } finally {
       setSelectedItems([]);
-    }
-  };
-  const completeHandler = async (id) => {
-    try {
-      const requestConfig = {
-        url: `/todo/${id}`,
-        method: "put",
-        data: {
-          isCompleted: true,
-        },
-      };
-      const { success } = await fetchData(requestConfig);
-      if (!success) throw new Error("Fail to mark to do as completed");
-      setTodos((todos) =>
-        todos.map((todo) => {
-          if (todo.id === id) todo.isCompleted = true;
-          return todo;
-        })
-      );
-    } catch (error) {
-      alert(error.message);
     }
   };
   const resourseListMarkUp = (
@@ -107,15 +69,15 @@ function Todos({ toggleModal }) {
         <Todo
           todo={item}
           onComplete={completeHandler}
-          onDelete={deleteByIdHandler}
+          onDelete={deleteHandler}
         />
       )}
       promotedBulkActions={[
         {
           content: "Delete",
-          onAction: deleteManyHandler,
+          onAction: () => deleteHandler(selectedItems),
         },
-        { content: "Complete", onAction: completeManyHandler },
+        { content: "Complete", onAction: () => completeHandler(selectedItems) },
       ]}
     />
   );
