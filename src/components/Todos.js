@@ -1,31 +1,44 @@
-import { ResourceList, Page } from "@shopify/polaris";
-import { useContext, useEffect, useState } from "react";
-import TodosContext from "../store/todosContext";
+import { ResourceList, Page, Card, EmptyState } from "@shopify/polaris";
+import { useState } from "react";
 import Todo from "./Todo";
 import fetchData from "../helpers/fetchData";
 import useFetchTodos from "../hooks/useFetchTodos";
+import TodoModal from "./TodoModal";
 
-function Todos({ toggleModal }) {
-  const { todos, setTodos } = useContext(TodosContext);
+function Todos() {
   const [selectedItems, setSelectedItems] = useState([]);
-  const { result, loading, fetched } = useFetchTodos();
+  const { todos, loading, fetched, setTodos } = useFetchTodos();
+  const [modalActive, setModalActive] = useState(false);
 
-  useEffect(() => {
-    if (fetched) setTodos(result);
-  }, [fetched]);
+  const toggleModal = () => {
+    setModalActive((active) => !active);
+  };
+
+  const addHandler = async (title) => {
+    const newTodo = { title };
+    const requestConfig = {
+      url: "/todos",
+      method: "post",
+      data: newTodo,
+    };
+    const { success, todo } = await fetchData(requestConfig);
+    if (!success) throw new Error("Fail to add todo");
+    setTodos((curTodos) => [...curTodos, todo]);
+    toggleModal();
+  };
 
   const deleteHandler = async (ids) => {
     try {
       const requestConfig = {
-        url: `/delete-todos`,
-        method: "post",
+        url: `/todos`,
+        method: "delete",
         data: {
           ids,
         },
       };
       const { success } = await fetchData(requestConfig);
       if (!success) throw new Error("Can not delete todos");
-      setTodos((todos) => todos.filter((todo) => !ids.includes(todo.id)));
+      setTodos((curTodos) => curTodos.filter((todo) => !ids.includes(todo.id)));
     } catch (error) {
       alert(error.message);
     } finally {
@@ -33,22 +46,21 @@ function Todos({ toggleModal }) {
     }
   };
 
-  const completeHandler = async (ids) => {
+  const toggleCompleteHandler = async (ids) => {
     try {
       const requestConfig = {
-        url: `/complete-todos`,
+        url: `/todos`,
         method: "put",
         data: {
-          isCompleted: true,
           ids,
         },
       };
       const { success } = await fetchData(requestConfig);
-      if (!success) throw new Error("Fail to mark todos as completed");
-      setTodos((todos) =>
-        todos.map((todo) => {
-          if (ids.includes(todo.id)) return { ...todo, isCompleted: true };
-          return todo;
+      if (!success) throw new Error("Fail to change state of todos");
+      setTodos((curTodos) =>
+        curTodos.map((todo) => {
+          if (!ids.includes(todo.id)) return todo;
+          return { ...todo, isCompleted: !todo.isCompleted };
         })
       );
     } catch (error) {
@@ -57,29 +69,44 @@ function Todos({ toggleModal }) {
       setSelectedItems([]);
     }
   };
+
+  const emptyStateMarkUp = (
+    <EmptyState
+      heading="No todo yet!"
+      action={{ content: "Add the work to be done", onAction: toggleModal }}
+      image="https://static.thenounproject.com/png/3455681-200.png"
+    ></EmptyState>
+  );
+
   const resourseListMarkUp = (
-    <ResourceList
-      resourceName={{ singular: "Todo", plural: "Todos" }}
-      selectedItems={selectedItems}
-      onSelectionChange={setSelectedItems}
-      selectable
-      items={todos}
-      loading={loading}
-      renderItem={(item) => (
-        <Todo
-          todo={item}
-          onComplete={completeHandler}
-          onDelete={deleteHandler}
-        />
-      )}
-      promotedBulkActions={[
-        {
-          content: "Delete",
-          onAction: () => deleteHandler(selectedItems),
-        },
-        { content: "Complete", onAction: () => completeHandler(selectedItems) },
-      ]}
-    />
+    <Card>
+      <ResourceList
+        resourceName={{ singular: "Todo", plural: "Todos" }}
+        selectedItems={selectedItems}
+        onSelectionChange={setSelectedItems}
+        selectable
+        items={todos}
+        emptyState={fetched && emptyStateMarkUp}
+        loading={loading}
+        renderItem={(item) => (
+          <Todo
+            todo={item}
+            onToggleComplete={toggleCompleteHandler}
+            onDelete={deleteHandler}
+          />
+        )}
+        promotedBulkActions={[
+          {
+            content: "Delete",
+            onAction: () => deleteHandler(selectedItems),
+          },
+          {
+            content: "Change state",
+            onAction: () => toggleCompleteHandler(selectedItems),
+          },
+        ]}
+      />
+    </Card>
   );
   const primaryAction = {
     content: "Create todo",
@@ -88,11 +115,15 @@ function Todos({ toggleModal }) {
     },
   };
   return (
-    <Page
-      title="Todos"
-      primaryAction={primaryAction}
-      children={resourseListMarkUp}
-    />
+    <Page title="Todos" primaryAction={primaryAction}>
+      {resourseListMarkUp}
+
+      <TodoModal
+        onAddTodo={addHandler}
+        active={modalActive}
+        toggleModal={toggleModal}
+      />
+    </Page>
   );
 }
 

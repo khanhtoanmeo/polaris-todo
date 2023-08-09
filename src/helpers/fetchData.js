@@ -13,6 +13,7 @@ async function fetchData({
     headers: {
       "Content-Type": "application/json",
     },
+    mode: "cors",
   };
   const res = await fetch(fetchUrl, method === "get" ? {} : requestConfig);
   return res.json();

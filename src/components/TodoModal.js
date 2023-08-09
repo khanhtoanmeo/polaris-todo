@@ -1,31 +1,32 @@
-import { Modal, TextField } from "@shopify/polaris";
-import { useState, useContext } from "react";
-import TodosContext from "../store/todosContext";
-import fetchData from "../helpers/fetchData";
+import { Modal, TextField, Toast } from "@shopify/polaris";
+import { useState } from "react";
 
-function TodoModal({ active, toggleModal }) {
-  const { setTodos } = useContext(TodosContext);
+function TodoModal({ active, toggleModal, onAddTodo }) {
   const [title, setTitle] = useState("");
   const [loading, setLoading] = useState(false);
+  const [toastShowed, setToastShowed] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const toastMarkup = toastShowed ? (
+    <Toast
+      content={message}
+      duration={2000}
+      onDismiss={() => setToastShowed(false)}
+    />
+  ) : null;
 
   const addTodo = async (title) => {
     try {
       setLoading(true);
-      if (!title.trim()) throw new Error("Please enter something meaningful");
+      if (!title.trim()) {
+        throw new Error("Please enter something meaningful");
+      }
 
-      const newTodo = { title, isCompleted: false };
-      const requestConfig = {
-        url: "/todos",
-        method: "post",
-        data: newTodo,
-      };
-      const { success, todo } = await fetchData(requestConfig);
-      if (!success) throw new Error("Fail to add todo");
-      setTodos((todos) => [...todos, todo]);
+      await onAddTodo(title);
     } catch (error) {
-      alert(error.message);
+      setMessage(error.message);
+      setToastShowed(true);
     } finally {
-      toggleModal();
       setLoading(false);
       setTitle("");
     }
@@ -45,11 +46,16 @@ function TodoModal({ active, toggleModal }) {
       <Modal
         loading={loading}
         open={active}
-        onClose={toggleModal}
+        onClose={() => {
+          setToastShowed(false);
+          setTitle("");
+          toggleModal();
+        }}
         title="Create a new todo"
         primaryAction={{
           content: "Create",
           onAction: handleSubmit,
+          disabled: !title,
         }}
         secondaryActions={[
           {
@@ -63,9 +69,10 @@ function TodoModal({ active, toggleModal }) {
             value={title}
             placeholder="Add todo"
             onChange={changeHandler}
-            label={""}
-            labelHidden
+            error={toastShowed}
+            onFocus={() => setToastShowed(false)}
           />
+          {toastMarkup}
         </Modal.Section>
       </Modal>
     </div>

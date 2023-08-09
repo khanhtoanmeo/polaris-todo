@@ -4,7 +4,7 @@ import fetchData from "../helpers/fetchData";
 function useFetchTodos() {
   const [loading, setLoading] = useState(false);
   const [fetched, setFetched] = useState(false);
-  const [result, setResult] = useState(null);
+  const [todos, setTodos] = useState([]);
 
   const fetching = async () => {
     try {
@@ -14,7 +14,7 @@ function useFetchTodos() {
       };
       const { data } = await fetchData(requestConfig);
       setFetched(true);
-      setResult(data);
+      setTodos(data);
     } catch (error) {
       alert(error.message);
     } finally {
@@ -26,7 +26,7 @@ function useFetchTodos() {
     fetching();
   }, []);
 
-  return { result, loading, fetched, setResult };
+  return { todos, loading, fetched, setTodos };
 }
 
 export default useFetchTodos;
