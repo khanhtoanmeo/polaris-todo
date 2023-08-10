@@ -8,7 +8,7 @@ import {
 } from "@shopify/polaris";
 import { useState } from "react";
 
-function Todo({ todo, onDelete, onComplete }) {
+function Todo({ todo, onDelete, onToggleComplete }) {
   const [completeLoading, setCompleteLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
 
@@ -18,7 +18,7 @@ function Todo({ todo, onDelete, onComplete }) {
 
   const completeHandler = async () => {
     setCompleteLoading(true);
-    await onComplete([id]);
+    await onToggleComplete([id]);
     setCompleteLoading(false);
   };
   const deleteHandler = async () => {
@@ -34,7 +34,7 @@ function Todo({ todo, onDelete, onComplete }) {
         <ButtonGroup>
           <Badge status={status}>{badgeTitle}</Badge>
           <Button onClick={completeHandler} loading={completeLoading}>
-            Complete
+            {isCompleted ? "Undo complete" : "Complete"}
           </Button>
           <Button destructive onClick={deleteHandler} loading={deleteLoading}>
             Delete
