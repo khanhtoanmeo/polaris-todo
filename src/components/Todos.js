@@ -71,7 +71,6 @@ function Todos() {
   };
 
   const emptyStateMarkUp = (
-      //todo: thẻ này em có thể đóng luôn như thế này chứ không cần 1 tag để đóng nữa
     <EmptyState
       heading="No todo yet!"
       action={{ content: "Add the work to be done", onAction: toggleModal }}
@@ -102,7 +101,6 @@ function Todos() {
             onAction: () => deleteHandler(selectedItems),
           },
           {
-            //todo : đổi label thành change status nghe nó oke hơn á
             content: "Change status",
             onAction: () => toggleCompleteHandler(selectedItems),
           },

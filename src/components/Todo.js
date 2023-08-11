@@ -34,7 +34,7 @@ function Todo({ todo, onDelete, onToggleComplete }) {
         <ButtonGroup>
           <Badge status={status}>{badgeTitle}</Badge>
           <Button onClick={completeHandler} loading={completeLoading}>
-            {isCompleted ? "Undo complete" : "Complete"}
+            {isCompleted ? "Undo" : "Complete"}
           </Button>
           <Button destructive onClick={deleteHandler} loading={deleteLoading}>
             Delete
