@@ -71,11 +71,12 @@ function Todos() {
   };
 
   const emptyStateMarkUp = (
+      //todo: thẻ này em có thể đóng luôn như thế này chứ không cần 1 tag để đóng nữa
     <EmptyState
       heading="No todo yet!"
       action={{ content: "Add the work to be done", onAction: toggleModal }}
       image="https://static.thenounproject.com/png/3455681-200.png"
-    ></EmptyState>
+    />
   );
 
   const resourseListMarkUp = (
@@ -101,7 +102,8 @@ function Todos() {
             onAction: () => deleteHandler(selectedItems),
           },
           {
-            content: "Change state",
+            //todo : đổi label thành change status nghe nó oke hơn á
+            content: "Change status",
             onAction: () => toggleCompleteHandler(selectedItems),
           },
         ]}

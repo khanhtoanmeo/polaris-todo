@@ -69,6 +69,7 @@ function TodoModal({ active, toggleModal, onAddTodo }) {
             value={title}
             placeholder="Add todo"
             onChange={changeHandler}
+            // todo: cái error để nó show ra ngay dưới textfields ấy em không cần show toast đâu
             error={toastShowed}
             onFocus={() => setToastShowed(false)}
           />
