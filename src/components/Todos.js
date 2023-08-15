@@ -29,6 +29,7 @@ function Todos() {
 
   const deleteHandler = async (ids) => {
     try {
+      console.log(ids);
       const requestConfig = {
         url: `/todos`,
         method: "delete",
@@ -46,15 +47,18 @@ function Todos() {
     }
   };
 
-  const toggleCompleteHandler = async (ids) => {
+  const toggleStatusHandler = async (ids) => {
     try {
       const requestConfig = {
         url: `/todos`,
         method: "put",
         data: {
-          ids,
+          todos: todos
+            .filter((todo) => ids.includes(todo.id))
+            .map((todo) => ({ id: todo.id, isCompleted: !todo.isCompleted })),
         },
       };
+
       const { success } = await fetchData(requestConfig);
       if (!success) throw new Error("Fail to change state of todos");
       setTodos((curTodos) =>
@@ -74,7 +78,7 @@ function Todos() {
     <EmptyState
       heading="No todo yet!"
       action={{ content: "Add the work to be done", onAction: toggleModal }}
-      image="https://static.thenounproject.com/png/3455681-200.png"
+      image="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png"
     />
   );
 
@@ -91,7 +95,7 @@ function Todos() {
         renderItem={(item) => (
           <Todo
             todo={item}
-            onToggleComplete={toggleCompleteHandler}
+            onToggleComplete={toggleStatusHandler}
             onDelete={deleteHandler}
           />
         )}
@@ -102,7 +106,7 @@ function Todos() {
           },
           {
             content: "Change status",
-            onAction: () => toggleCompleteHandler(selectedItems),
+            onAction: () => toggleStatusHandler(selectedItems),
           },
         ]}
       />

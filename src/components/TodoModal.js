@@ -12,11 +12,9 @@ function TodoModal({ active, toggleModal, onAddTodo }) {
       if (!title.trim()) {
         throw new Error("Please enter something meaningful");
       }
-
       await onAddTodo(title);
     } catch (error) {
       setErrorMessage(error.message);
-      setTimeout(() => setErrorMessage(""), 3000);
     } finally {
       setLoading(false);
       setTitle("");
