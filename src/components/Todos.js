@@ -55,7 +55,10 @@ function Todos() {
         data: {
           todos: todos
             .filter((todo) => ids.includes(todo.id))
-            .map((todo) => ({ id: todo.id, isCompleted: !todo.isCompleted })),
+            .map((todo) => ({
+              id: todo.id,
+              todoData: { isCompleted: !todo.isCompleted },
+            })),
         },
       };
 

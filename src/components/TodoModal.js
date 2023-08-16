@@ -43,7 +43,7 @@ function TodoModal({ active, toggleModal, onAddTodo }) {
       primaryAction={{
         content: "Create",
         onAction: handleSubmit,
-        disabled: !title,
+        disabled: !title || loading,
       }}
       secondaryActions={[
         {
